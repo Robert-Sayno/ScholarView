@@ -125,6 +125,7 @@ if (isset($_POST['submit'])) {
 
     // Generate username/email from the student's name
     $username_email = strtolower(str_replace(' ', '', $students_name)) . '@.com';
+    
 
     // Handle image upload
     $targetDirectory = "/opt/lampp/htdocs/ScholarView/parent/uploads/";

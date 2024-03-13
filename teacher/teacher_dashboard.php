@@ -123,8 +123,8 @@ body {
     <div class="sidebar">
         <nav>
             <ul>
-                <li><a href="display_users.php">Manage Users</a></li>
-                <li><a href="display_messages.php">View Messages</a></li>
+                <li><a href="view_students.php">View all students</a></li>
+                <li><a href="view_students.php">Add more students</a></li>
                 <li><a href="display_tours.php">Manage Tours</a></li>
             </ul>
         </nav>

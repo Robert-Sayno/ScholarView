@@ -1,65 +1,40 @@
-<?php
-// Database connection parameters
-$server = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'ScholarView';
-
-// Create a new mysqli connection using the provided parameters
-$conn = new mysqli($server, $username, $password, $database);
-
-// Check if the connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Initialize $result to an empty array
-$result = [];
-
-// Check if the form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the selected class and search input
-    $selectedClass = $_POST["class"];
-    $searchInput = $_POST["search"];
-
-    // Prepare the SQL query based on the selected class and search input
-    $sql = "SELECT * FROM student_information WHERE class = ? AND students_name LIKE ?";
-    $stmt = $conn->prepare($sql);
-
-    // Bind parameters
-    $selectedClass = '%' . $selectedClass . '%'; // For partial matches
-    $searchInput = '%' . $searchInput . '%'; // For partial matches
-    $stmt->bind_param("ss", $selectedClass, $searchInput);
-
-    // Execute the query
-    $stmt->execute();
-
-    // Get the result
-    $result = $stmt->get_result();
-
-    // Close the statement
-    $stmt->close();
-}
-
-// Close the database connection
-$conn->close();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Manage Users</title>
+    <title>Admin Dashboard</title>
     <style>
-        /* Your styles... */
+        body {
+            background-image: url('lost_property_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #7734eb;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
 
-        /* Styles for the Manage Users page */
-        .table-container {
-            margin-top: 20px;
-            width: 100%;
-            overflow-x: auto;
+        .dashboard-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow: auto;
         }
 
         table {
@@ -70,107 +45,193 @@ $conn->close();
 
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            padding: 10px;
         }
 
         th {
-            background-color: #3498db;
-            color: #fff;
+            background-color: #4CAF50;
+            color: white;
         }
 
-        tr:nth-child(even) {
+        tbody tr:nth-child(even) {
             background-color: #f2f2f2;
         }
 
-        .actions-container {
-            display: flex;
-            gap: 10px;
+        a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
         }
 
-        .action-btn {
-            padding: 6px 10px;
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .property-image {
+            max-width: 100%;
+            max-height: 100px;
+        }
+
+        .logout-btn {
+            color: #fff;
+            background-color: #e74c3c;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            text-decoration: none;
         }
 
-        .edit-btn {
-            background-color: #2ecc71;
-            color: #fff;
+        .logout-btn:hover {
+            background-color: #c0392b;
         }
 
-        .delete-btn {
-            background-color: #e74c3c;
-            color: #fff;
+        .search-filter-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
-        /* Your styles... */
+
+        .search-input {
+            padding: 5px;
+        }
+
+        .nav-container {
+            background-color: #3498db;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Your existing header and navigation... -->
+    <?php
+    // Include necessary files and authentication check
+    include_once('../auth/connection.php');
+    include_once('../auth/auth_functions.php');
 
-    <div class="content-container">
-        <div class="filter-container">
-            <form class="filter-form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                <label for="class-filter">Filter by Class:</label>
-                <select name="class" id="class-filter">
-                    <option value="P7">P7</option>
-                    <option value="P6">P6</option>
-                    <option value="P2">P2</option>
-                    <!-- Add more classes as needed -->
-                </select>
-                <label for="search-input">Search:</label>
-                <input type="text" name="search" id="search-input" placeholder="Enter user name">
-                <input type="submit" value="Apply Filter">
-            </form>
+    // Fetch users from the database
+    $sql_users = "SELECT * FROM student_information";
+    $result_users = mysqli_query($conn, $sql_users);
+
+    // Check if the query was successful
+    if ($result_users) {
+        $users = mysqli_fetch_all($result_users, MYSQLI_ASSOC);
+    } else {
+        // Handle the error, you can customize this part based on your needs
+        die('Error fetching users: ' . mysqli_error($conn));
+    }
+
+    // Close the database connection
+    mysqli_close($conn);
+    ?>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Welcome to the Admin Dashboard</h2>
         </div>
 
-        <div class="table-container">
-            <?php
-            // Check if $result is not empty before proceeding
-            if (!empty($result)) {
-                if ($result->num_rows > 0) {
-                    echo '<table>';
-                    echo '<thead>';
-                    echo '<tr>';
-                    echo '<th>Name</th>';
-                    echo '<th>Student ID</th>';
-                    echo '<th>User ID</th>';
-                    echo '<th>Class</th>';
-                    echo '<th>Actions</th>';
-                    echo '</tr>';
-                    echo '</thead>';
-                    echo '<tbody>';
+        <!-- Navigation Links -->
+        <div class="nav-container">
+            <a class="nav-link" href="teacher_dashboard.php">Home Dashboard</a>
+            <a class="nav-link" href="add_student.php">add more students</a>
+            <a class="nav-link" href="#">View Messages</a>
+            <a class="nav-link" href="#">Manage Tours</a>
+            <!-- Add more links as needed -->
+        </div>
 
-                    // Fetch and display the student details
-                    while ($row = $result->fetch_assoc()) {
-                        echo '<tr>';
-                        echo '<td>' . $row['students_name'] . '</td>';
-                        echo '<td>' . $row['student_id'] . '</td>';
-                        echo '<td>' . $row['user_id'] . '</td>';
-                        echo '<td>' . $row['class'] . '</td>';
-                        echo '<td class="actions-container">';
-                        echo '<button class="action-btn edit-btn">Edit</button>';
-                        echo '<button class="action-btn delete-btn">Delete</button>';
-                        // Add more action buttons as needed
-                        echo '</td>';
-                        echo '</tr>';
-                    }
+        <!-- Search and filter options -->
+        <div class="search-filter-container">
+            <input type="text" class="search-input" id="search" placeholder="Search by name">
+            <select id="filter" class="search-input">
+                <option value="">Filter by class</option>
+                <option value="P7">P7</option>
+                <option value="P6">P6</option>
+                <option value="P2">P5</option>
+                <option value="P7">P4</option>
+                <option value="P6">p3</option>
+                <option value="P2">P2</option>
+                <option value="P2">P1</option>
 
-                    echo '</tbody>';
-                    echo '</table>';
-                } else {
-                    echo '<p>No results found.</p>';
-                }
-            }
-            ?>
+                <!-- Add more classes as needed -->
+            </select>
+        </div>
+
+        <!-- Display users in a table -->
+        <div class="dashboard-section">
+            <h3>All students</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $user) : ?>
+                        <tr>
+                            <td><?php echo $user['id']; ?></td>
+                            <td><?php echo $user['user_id']; ?></td>
+                            <td><?php echo $user['students_name']; ?></td>
+                            <td><?php echo $user['username_email']; ?></td>
+                            <td><?php echo $user['class']; ?></td>
+                            <td><?php echo (isset($user['active']) ? ($user['active'] ? 'Active' : 'Inactive') : 'N/A'); ?></td>
+                            <td>
+                                <a href="edit_user.php?id=<?php echo $user['id']; ?>">Edit</a>
+                                <a href="delete_user.php?id=<?php echo $user['id']; ?>">Delete</a>
+                                <a href="manage_student.php?id=<?php echo $user['id']; ?>">manage</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- Your existing footer... -->
+    <script>
+        // JavaScript for search and filter
+        document.getElementById('search').addEventListener('input', function () {
+            filterTable();
+        });
+
+        document.getElementById('filter').addEventListener('change', function () {
+            filterTable();
+        });
+
+        function filterTable() {
+            var searchInput = document.getElementById('search').value.toLowerCase();
+            var filterClass = document.getElementById('filter').value.toLowerCase();
+
+            var table = document.querySelector('table');
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var nameColumn = row.getElementsByTagName('td')[2].textContent.toLowerCase();
+                var classColumn = row.getElementsByTagName('td')[4].textContent.toLowerCase();
+
+                var hideRow = (searchInput && !nameColumn.includes(searchInput)) || (filterClass && filterClass !== classColumn);
+                row.style.display = hideRow ? 'none' : '';
+            }
+        }
+    </script>
 </body>
 
 </html>
