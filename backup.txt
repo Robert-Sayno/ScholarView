@@ -4,192 +4,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - Add Teacher</title>
     <style>
-        body {
-            background-image: url('lost_property_bg.jpg');
-            background-size: cover;
-            background-position: center;
-            color: #7734eb;
-            font-family: Arial, sans-serif;
-            margin: 0;
-        }
+        /* Your styles... */
 
-        .dashboard-container {
-            width: 80%;
-            margin: 0 auto;
-            text-align: center;
+        /* Styles for the Add Teacher page */
+        .form-container {
+            width: 50%;
+            margin: 20px auto;
             padding: 20px;
-        }
-
-        .dashboard-section {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            overflow: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
             border: 1px solid #ddd;
-            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        th {
-            background-color: #4CAF50;
-            color: white;
+        label {
+            display: block;
+            margin-bottom: 8px;
         }
 
-        tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
         }
 
-        a {
-            color: #3498db;
-            text-decoration: none;
-            margin-right: 10px;
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
         }
 
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .property-image {
-            max-width: 100%;
-            max-height: 100px;
-        }
-
-        .logout-btn {
+        button {
+            background-color: #3498db;
             color: #fff;
-            background-color: #e74c3c;
-            padding: 10px 15px;
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
         }
 
-        .logout-btn:hover {
-            background-color: #c0392b;
-        }
-
-        .search-filter-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            padding: 5px;
-        }
+        /* Your styles... */
     </style>
 </head>
 
 <body>
-    <?php
-    // Include necessary files and authentication check
-    include_once('../auth/connection.php');
-    include_once('../auth/auth_functions.php');
+    <!-- Your existing header and navigation... -->
 
-    // Fetch users from the database
-    $sql_users = "SELECT * FROM student_information";
-    $result_users = mysqli_query($conn, $sql_users);
+    <div class="content-container">
+        <div class="form-container">
+            <h2>Add Teacher</h2>
+            <?php
+            // Check if the form is submitted
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                // Database connection parameters
+                $server = 'localhost';
+                $username = 'root';
+                $password = '';
+                $database = 'ScholarView';
 
-    // Check if the query was successful
-    if ($result_users) {
-        $users = mysqli_fetch_all($result_users, MYSQLI_ASSOC);
-    } else {
-        // Handle the error, you can customize this part based on your needs
-        die('Error fetching users: ' . mysqli_error($conn));
+                // Create a new mysqli connection using the provided parameters
+                $conn = new mysqli($server, $username, $password, $database);
+
+                // Check if the connection was successful
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                }
+
+                // Get values from the form
+                $teacher_name = $_POST["teacher_name"];
+                $teacher_contact = $_POST["teacher_contact"];
+                $teacher_contact = $_POST["teacher_contact"];
+            
+
+    // Generate random user ID
+    $user_id = generateUserID();
+
+    // Generate username/email from the student's name
+    $username_email = strtolower(str_replace(' ', '', $students_name)) . '@.com';
+
+    // Handle image upload
+    $targetDirectory = "/opt/lampp/htdocs/ScholarView/admin/uploads/";
+
+    // Create the uploads directory if it doesn't exist
+    if (!file_exists($targetDirectory)) {
+        mkdir($targetDirectory, 0775, true); // Set the appropriate permission (read/write/execute for owner and group, read/execute for others)
     }
 
-    // Close the database connection
-    mysqli_close($conn);
-    ?>
+    $targetFile = $targetDirectory . basename($_FILES["students_image"]["name"]);
 
-    <div class="dashboard-container">
-        <h2>Welcome to the Admin Dashboard</h2>
+    if (move_uploaded_file($_FILES["teachers_photo"]["tmp_name"], $targetFile)) {
+        // Image uploaded successfully, now insert the student details into the database
+        $student_image = $targetFile;
 
-        <!-- Search and filter options -->
-        <div class="search-filter-container">
-            <input type="text" class="search-input" id="search" placeholder="Search by name">
-            <select id="filter" class="search-input">
-                <option value="">Filter by class</option>
-                <option value="P7">P7</option>
-                <option value="P6">P6</option>
-                <option value="P2">P2</option>
-                <!-- Add more classes as needed -->
-            </select>
-        </div>
 
-        <!-- Display users in a table -->
-        <div class="dashboard-section">
-            <h3>All students</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Username</th>
-                        <th>Class</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user) : ?>
-                        <tr>
-                            <td><?php echo $user['id']; ?></td>
-                            <td><?php echo $user['user_id']; ?></td>
-                            <td><?php echo $user['students_name']; ?></td>
-                            <td><?php echo $user['username_email']; ?></td>
-                            <td><?php echo $user['class']; ?></td>
-                            <td><?php echo (isset($user['active']) ? ($user['active'] ? 'Active' : 'Inactive') : 'N/A'); ?></td>
-                            <td>
-                                <a href="edit_user.php?id=<?php echo $user['id']; ?>">Edit</a>
-                                <a href="delete_user.php?id=<?php echo $user['id']; ?>">Delete</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                // Prepare the SQL query for insertion
+                $sql = "INSERT INTO teacher_information (user_id, username_email, teacher_name,  teacher_contact,) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+
+                // Bind parameters
+                $stmt->bind_param("ssssss", $user_id, $teacher_name, $teacher_contact, $username_email);
+
+                // Execute the query
+                $stmt->execute();
+
+                // Close the statement
+                $stmt->close();
+
+                // Close the database connection
+                $conn->close();
+
+                echo '<p>Teacher added successfully!</p>';
+            }
+
+            // Function to generate a unique user ID
+            function generateUserId()
+            {
+                // You can implement your own logic to generate a unique user ID
+                // For simplicity, a random 6-character string is generated here
+                return substr(md5(uniqid()), 0, 6);
+            }
+
+            // Function to generate an email based on the name
+            function generateEmail($name)
+            {
+                // Replace spaces with underscores and convert to lowercase
+                $username = strtolower(str_replace(' ', '_', $name));
+
+                // Generate a dummy email domain for simplicity
+                $domain = 'nakasenyip/s.com';
+
+                return $username . '@' . $domain;
+            }
+            ?>
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                <label for="name">Name:</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="teacher_id">Teacher ID:</label>
+                <input type="text" name="teacher_id" id="teacher_id" required>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+    </select>
+
+    <label for="students_image">teacher's photo:</label>
+    <input type="file" id="teachers_photo" name="teachers_photo" required>
+
+
+
+
+                <label for="class">Class:</label>
+                <select name="class" id="class" required>
+                    <option value="P7">P7</option>
+                    <option value="P6">P6</option>
+                    <option value="P2">P2</option>
+                    <!-- Add more classes as needed -->
+                </select>
+
+                <button type="submit">Add Teacher</button>
+            </form>
         </div>
     </div>
 
-    <script>
-        // JavaScript for search and filter
-        document.getElementById('search').addEventListener('input', function () {
-            filterTable();
-        });
-
-        document.getElementById('filter').addEventListener('change', function () {
-            filterTable();
-        });
-
-        function filterTable() {
-            var searchInput = document.getElementById('search').value.toLowerCase();
-            var filterClass = document.getElementById('filter').value.toLowerCase();
-
-            var table = document.querySelector('table');
-            var rows = table.getElementsByTagName('tr');
-
-            for (var i = 1; i < rows.length; i++) {
-                var row = rows[i];
-                var nameColumn = row.getElementsByTagName('td')[2].textContent.toLowerCase();
-                var classColumn = row.getElementsByTagName('td')[4].textContent.toLowerCase();
-
-                var hideRow = (searchInput && !nameColumn.includes(searchInput)) || (filterClass && filterClass !== classColumn);
-                row.style.display = hideRow ? 'none' : '';
-            }
-        }
-    </script>
+    <!-- Your existing footer... -->
 </body>
 
 </html>
