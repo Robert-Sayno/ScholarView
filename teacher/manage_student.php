@@ -167,21 +167,44 @@
         <h2 style="text-align: center;">Student Report Card</h2>
         <h3 style="text-align: center;">Student Details</h3>
         <p style="text-align: center;">Name: <?php echo $student_details['students_name']; ?></p>
-        <p style="text-align: center;">Student ID: <?php echo $student_details['student_id']; ?></p>
+        <p style="text-align: center;">Student ID: <?php echo $student_details['user_id']; ?></p>
+        <p style="text-align: center;">Username Email: <?php echo $student_details['username_email']; ?></p>
+
 
         <form id="performance-form">
             <table>
             <tbody>
+                    <tr>
+                        <td>Science</td>
+                        <td><input type="text" id="sci-performance" name="sci-performance"></td>
+                        <td><input type="text" id="sci-remarks" name="sci-remarks" class="fixed-size-input"></td>
+                    </tr>
+                    <tr>
+                        <td>English</td>
+                        <td><input type="text" id="eng-performance" name="eng-performance"></td>
+                        <td><input type="text" id="eng-remarks" name="eng-remarks" class="fixed-size-input"></td>
+                    </tr>
+                    <tr>
+                        <td>Social studies</td>
+                        <td><input type="text" id="sst-performance" name="sst-performance"></td>
+                        <td><input type="text" id="sst-remarks" name="sst-remarks" class="fixed-size-input"></td>
+                    </tr>
                     <tr>
                         <td>Mathematics</td>
                         <td><input type="text" id="math-performance" name="math-performance"></td>
                         <td><input type="text" id="math-remarks" name="math-remarks" class="fixed-size-input"></td>
                     </tr>
                     <tr>
-                        <td>English</td>
-                        <td><input type="text" id="english-performance" name="english-performance"></td>
-                        <td><input type="text" id="english-remarks" name="english-remarks" class="fixed-size-input"></td>
+                        <td>Literacy 1</td>
+                        <td><input type="text" id="lit1-performance" name="lit1-performance"></td>
+                        <td><input type="text" id="lit1-remarks" name="lit1-remarks" class="fixed-size-input"></td>
                     </tr>
+                    <tr>
+                        <td>Literacy 2</td>
+                        <td><input type="text" id="lit2-performance" name="lit2-performance"></td>
+                        <td><input type="text" id="lit2-remarks" name="lit2-remarks" class="fixed-size-input"></td>
+                    </tr>
+                    
                     <!-- Add more subjects as needed -->
                 </tbody>
             </table>

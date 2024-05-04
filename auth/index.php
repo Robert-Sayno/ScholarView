@@ -61,8 +61,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     .welcome-message {
       position: absolute;
-      top: -50px; /* Adjust top position */
+      top: -70px; /* Adjust top position */
       left: 50%;
       transform: translateX(-50%);
       font-size: 18px; /* Reduce font size */
@@ -200,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 <div class="wrapper">
     <div class="welcome-message">Welcome, Nakisenyi P/S-ScholarView</div>
-
+    
     <form action="index.php" method="POST">
       <div class="input-box">
         <input type="text" id="username_email" name="username_email" placeholder="Username/Email" required>

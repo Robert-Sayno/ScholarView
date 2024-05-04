@@ -108,8 +108,7 @@ body {
         .logout-btn:hover {
             background-color: #c0392b;
         }
-        /* ... Your existing styles ... */
-
+      
         .statistic-container {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
@@ -132,16 +131,41 @@ body {
 
     <div class="dashboard-container">
         <div class="header-content">
-            <h2>Welcome to the Admin Dashboard</h2>
+            <?php
+            session_start(); // Start session
+
+            // Include your database connection file
+            include 'connection.php'; // Assuming you have this file
+
+            // Check if the teacher is logged in
+            if (isset($_SESSION['user_id'])) {
+                // Get the teacher ID from the session
+                $teacher_id = $_SESSION['user_id'];
+
+                // Fetch teacher information from the database based on the teacher ID
+                $sql = "SELECT teacher_name FROM teacher_information WHERE user_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $teacher_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $teacher = $result->fetch_assoc();
+
+                // Check if teacher information was fetched successfully
+                if ($teacher) {
+                    $teacher_name = $teacher['teacher_name'];
+                }
+            }
+            ?>
+            <h2>Welcome, <?php echo isset($teacher_name) ? $teacher_name : 'Admin'; ?></h2>
             <div class="user-info">
-                <span>Logged in as: [Admin Name]</span>
+                <span>Logged in as: <?php echo isset($teacher_name) ? $teacher_name : 'Admin'; ?></span>
                 <a class="logout-btn" href="logout.php">Logout</a>
             </div>
         </div>
 
         <div class="content-section">
             <div class="main-content">
-                <p>Manage and monitor your platform with ease. Use the sidebar to navigate through different sections and take 
+                <p>Manage and monitor your platform with ease. Use the sidebar to navigate through different sections and take
                     control of user data, messages, and tour information.</p>
 
                 <div class="data-section">

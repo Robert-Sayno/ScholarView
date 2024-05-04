@@ -45,45 +45,50 @@
 </head>
 
 <body>
-   
+    <!-- Header Navigation -->
+    <nav style="background-color: #3498db; padding: 10px; text-align: center;">
+    
+        <h1 style="margin: 0; color: #fff;">Admin Dashboard</h1>
+        
+    </nav>
 
     <div class="content-container">
         <div class="form-container">
             <h2>Add Teacher</h2>
             <?php
             // Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+
+            // Include necessary files and authentication check
+            include_once('../auth/connection.php');
+            include_once('../auth/auth_functions.php');
 
             // Check if the form is submitted
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                // Include necessary files and authentication check
-                include_once('../auth/connection.php');
-                include_once('../auth/auth_functions.php');
-
                 // Get values from the form
                 $teacher_name = $_POST["name"];
                 $gender = $_POST["gender"];
                 $class = $_POST["class"];
                 // Function to generate a unique user ID
-function generateUserID()
-{
-    // You can implement your own logic to generate a unique user ID
-    // For simplicity, a random 6-character string is generated here
-    return substr(md5(uniqid()), 0, 6);
-}
+                function generateUserID()
+                {
+                    // You can implement your own logic to generate a unique user ID
+                    // For simplicity, a random 6-character string is generated here
+                    return substr(md5(uniqid()), 0, 6);
+                }
 
-// Function to generate an email based on the name
-function generateEmail($name)
-{
-    // Replace spaces with underscores and convert to lowercase
-    $username = strtolower(str_replace(' ', '', $name));
+                // Function to generate an email based on the name
+                function generateEmail($name)
+                {
+                    // Replace spaces with underscores and convert to lowercase
+                    $username = strtolower(str_replace(' ', '', $name));
 
-    // Generate a dummy email domain for simplicity
-    $domain = 'nyakap/s.com';
+                    // Generate a dummy email domain for simplicity
+                    $domain = 'nyakap/s.com';
 
-    return $username . '@' . $domain;
-}
+                    return $username . '@' . $domain;
+                }
 
                 // Generate user ID and email
                 $user_id = generateUserID();
@@ -111,20 +116,21 @@ function generateEmail($name)
                     // Bind parameters
                     $stmt->bind_param("ssssss", $user_id, $username_email, $teacher_name, $gender, $class, $teacher_photo);
                     // Execute the query
-if ($stmt->execute()) {
-    echo '<script>alert("Teacher added successfully!");</script>';
-    echo '<script>window.location.href = "teacher_list.php";</script>'; // Redirect to teacher list page
-} else {
-    echo '<script>alert("Error adding teacher: ' . $conn->error . '");</script>';
-}
+                    if ($stmt->execute()) {
+                        echo '<script>alert("Teacher added successfully!");</script>';
+                        echo '<script>window.location.href = "view_teachers.php";</script>'; // Redirect to teacher list page
+                    } else {
+                        echo '<script>alert("Error adding teacher: ' . $conn->error . '");</script>';
+                    }
+                } else {
+                    echo "<p>Sorry, there was an error uploading your file.</p>";
+                }
 
-
-
-                // Close the database connection
-                $conn->close();
+                // Close the statement
+                $stmt->close();
             }
             ?>
-        
+
             <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data">
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" required>
@@ -156,3 +162,4 @@ if ($stmt->execute()) {
 </body>
 
 </html>
+

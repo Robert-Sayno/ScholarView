@@ -147,8 +147,8 @@
         <div class="nav-container">
             <a class="nav-link" href="teacher_dashboard.php">Home Dashboard</a>
             <a class="nav-link" href="add_student.php">add more students</a>
-            <a class="nav-link" href="#">View Messages</a>
-            <a class="nav-link" href="#">Manage Tours</a>
+            <a class="nav-link" href="view_students.php">Manage Students</a>
+            <a class="nav-link" href="logout.php">Log out</a>
             <!-- Add more links as needed -->
         </div>
 
