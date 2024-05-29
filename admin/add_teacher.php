@@ -85,7 +85,7 @@
                     $username = strtolower(str_replace(' ', '', $name));
 
                     // Generate a dummy email domain for simplicity
-                    $domain = 'nyakap/s.com';
+                    $domain = 'student360.com';
 
                     return $username . '@' . $domain;
                 }
@@ -95,7 +95,7 @@
                 $username_email = generateEmail($teacher_name);
 
                 // Handle image upload
-                $targetDirectory = "/opt/lampp/htdocs/ScholarView/admin/uploads/";
+                $targetDirectory = "/opt/lampp/htdocs/student360/admin/uploads/";
 
                 // Create the uploads directory if it doesn't exist
                 if (!file_exists($targetDirectory)) {
@@ -117,7 +117,7 @@
                     $stmt->bind_param("ssssss", $user_id, $username_email, $teacher_name, $gender, $class, $teacher_photo);
                     // Execute the query
                     if ($stmt->execute()) {
-                        echo '<script>alert("Teacher added successfully!");</script>';
+                        echo '<script>alert("Lecturer added successfully!");</script>';
                         echo '<script>window.location.href = "view_teachers.php";</script>'; // Redirect to teacher list page
                     } else {
                         echo '<script>alert("Error adding teacher: ' . $conn->error . '");</script>';
@@ -145,11 +145,11 @@
                 <label for="teachers_photo">Teacher's Photo:</label>
                 <input type="file" id="teachers_photo" name="teachers_photo" required>
 
-                <label for="class">Class:</label>
-                <select name="class" id="class" required>
-                    <option value="P7">P7</option>
-                    <option value="P6">P6</option>
-                    <option value="P2">P2</option>
+                <label for="class">Grade:</label>
+                <select name="grade" id="class" required>
+                    <option value="G7">P7</option>
+                    <option value="G6">P6</option>
+                    <option value="G2">P2</option>
                     <!-- Add more classes as needed -->
                 </select>
 

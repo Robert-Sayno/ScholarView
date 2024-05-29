@@ -4,210 +4,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Teacher Dashboard</title>
     <style>
-
-body {
-            background-image: url('../tugume.jpeg');
+        body {
+            background-image: url('tugume.jpeg');
             background-size: cover;
             background-position: center;
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
-            min-height: 100vh;
         }
 
         .sidebar {
-            width: 20%;
+            width: 250px;
             background-color: #2c3e50;
-            padding: 20px;
+            padding: 30px 20px;
             box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
         }
 
-        .dashboard-container {
-            width: 80%;
-            max-width: 1200px;
-            padding: 20px;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #3498db;
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
             margin: 0;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-info span {
-            font-size: 18px;
-        }
-
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        nav li {
+        .sidebar nav ul li {
             margin-bottom: 20px;
-            font-size: 20px;
         }
 
-        nav a {
+        .sidebar nav ul li a {
             color: #fff;
             text-decoration: none;
-            transition: color 0.3s ease;
+            font-size: 18px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
-        nav a:hover {
-            color: #3498db;
+        .sidebar nav ul li a:hover {
+            background-color: #3498db;
         }
 
-        .content-section {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+        .dashboard-container {
+            margin-left: 250px;
+            padding: 30px;
         }
 
-        .main-content {
-            width: 70%;
-            background-color: rgba(0, 0, 0, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
+        .welcome {
+            text-align: right;
+            margin-bottom: 20px;
+            padding-right: 30px;
         }
 
-        p {
-            font-size: 30px;
+        .welcome p {
+            margin: 0;
         }
 
         .logout-btn {
-            display: block;
-            color: #fff;
             background-color: #e74c3c;
-            padding: 10px 20px;
+            color: #fff;
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
             transition: background-color 0.3s ease;
         }
 
         .logout-btn:hover {
             background-color: #c0392b;
         }
-      
-        .statistic-container {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+
+        .section {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .section form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .section input,
+        .section select,
+        .section textarea {
             padding: 10px;
-            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .section button {
+            padding: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .section button:hover {
+            background-color: #2980b9;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .dashboard-container {
+                margin-left: 0;
+                padding: 15px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
         <nav>
             <ul>
-                <li><a href="view_students.php">View all students</a></li>
-                <li><a href="view_students.php">Add more students</a></li>
-                <li><a href="display_tours.php">Manage Tours</a></li>
+                <li><a href="view_students.php">View All Students</a></li>
+                <li><a href="add_student.php">Add Student</a></li>
+                <li><a href="enter_grades.php">Enter Grades</a></li>
+                <li><a href="view_grades.php">View Grades</a></li>
+                <li><a href="attendance.php">Record Attendance</a></li>
+                <li><a href="attendance_reports.php">Attendance Reports</a></li>
+                <li><a href="notifications.php">Send Notifications</a></li>
+                <li><a href="announcements.php">Post Announcements</a></li>
             </ul>
         </nav>
     </div>
 
+    <!-- Dashboard Content -->
     <div class="dashboard-container">
-        <div class="header-content">
-            <?php
-            session_start(); // Start session
-
-            // Include your database connection file
-            include 'connection.php'; // Assuming you have this file
-
-            // Check if the teacher is logged in
-            if (isset($_SESSION['user_id'])) {
-                // Get the teacher ID from the session
-                $teacher_id = $_SESSION['user_id'];
-
-                // Fetch teacher information from the database based on the teacher ID
-                $sql = "SELECT teacher_name FROM teacher_information WHERE user_id = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $teacher_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $teacher = $result->fetch_assoc();
-
-                // Check if teacher information was fetched successfully
-                if ($teacher) {
-                    $teacher_name = $teacher['teacher_name'];
-                }
-            }
-            ?>
-            <h2>Welcome, <?php echo isset($teacher_name) ? $teacher_name : 'Admin'; ?></h2>
-            <div class="user-info">
-                <span>Logged in as: <?php echo isset($teacher_name) ? $teacher_name : 'Admin'; ?></span>
-                <a class="logout-btn" href="logout.php">Logout</a>
-            </div>
+        <!-- Welcome Message -->
+        <div class="welcome">
+            <h2>Welcome to the Teacher Dashboard</h2>
+            <p>Hello <?php echo isset($teacher_name) ? $teacher_name : 'Admin'; ?>! You are currently logged in as <?php echo $_SESSION['email']; ?>. Feel free to navigate through the dashboard options below.</p>
+            <a class="logout-btn" href="logout.php">Logout</a>
         </div>
 
-        <div class="content-section">
-            <div class="main-content">
-                <p>Manage and monitor your platform with ease. Use the sidebar to navigate through different sections and take
-                    control of user data, messages, and tour information.</p>
-
-                <div class="data-section">
-                    <h3>Statistics</h3>
-
-                    <?php
-                    // Database connection parameters
-                    $server = 'localhost';
-                    $username = 'root';
-                    $password = '';
-                    $database = 'ScholarView';
-
-                    // Create a new mysqli connection using the provided parameters
-                    $conn = new mysqli($server, $username, $password, $database);
-
-                    // Check if the connection was successful
-                    if ($conn->connect_error) {
-                        die("Connection failed: " . $conn->connect_error);
-                    }
-
-                    // Fetch and display total number of students for each class
-                    $classes = ['P7', 'P6', 'P2']; // Add more classes as needed
-                    foreach ($classes as $class) {
-                        $sql = "SELECT COUNT(*) AS total_students FROM student_information WHERE class = ?";
-                        $stmt = $conn->prepare($sql);
-                        $stmt->bind_param("s", $class);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        $row = $result->fetch_assoc();
-                        $total_students = $row['total_students'];
-
-                        echo "<div class='statistic-container'>";
-                        echo "<p>Total Number of Students in Class $class: $total_students</p>";
-                        echo "</div>";
-                    }
-
-                    // Close the database connection
-                    $conn->close();
-                    ?>
-                </div>
-            </div>
+        <!-- Dashboard Image -->
+        <div class="image-container">
+            <img src="dashboard_image.jpg" alt="Dashboard Image">
         </div>
+
+        <!-- Section: View Student Information -->
+        <div class="section">
+            <h3>View Student Information</h3>
+            <p>Here you can access all student information, including their details, grades, attendance records, and more.</p>
+            <p>Use the navigation menu on the left to explore the various options available.</p>
+        </div>
+
+        <!-- Section: Record Attendance -->
+        <div class="section">
+            <h3>Record Attendance</h3>
+            <p>Record the attendance of students by marking them present or absent for each class session.</p>
+            <p>Make sure to update the attendance regularly to keep accurate records.</p>
+        </div>
+
+        <!-- Section: Send Notifications -->
+        <div class="section">
+            <h3>Send Notifications</h3>
+            <p>Stay connected with students and parents by sending notifications about upcoming events, assignments, and important announcements.</p>
+            <p>Use this feature to communicate effectively with everyone involved.</p>
+        </div>
+
+        <!-- Section: Post Announcements -->
+        <div class="section">
+            <h3>Post Announcements</h3>
+            <p>Keep everyone informed about the latest news, events, and updates by posting announcements on the dashboard.</p>
+            <p>Make sure to provide relevant information to students and parents to enhance their overall experience.</p>
+        </div>
+
+        <!-- Add more sections as needed -->
+
     </div>
 </body>
 

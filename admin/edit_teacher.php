@@ -42,7 +42,7 @@ if (isset($_GET['id'])) {
     $teacher = getTeacherDetails($conn, $teacher_id);
 
     if (!$teacher) {
-        echo '<script>alert("Teacher not found!");</script>';
+        echo '<script>alert("Lecturer not found!");</script>';
         echo '<script>window.location.href = "teachers.php";</script>'; // Redirect to the teachers page if teacher not found
     }
 } else {
